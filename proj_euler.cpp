@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 #include <conio.h>
 
@@ -21,29 +22,34 @@ int suma_3_5(const int lim){
 //2
 int suma_fibonacci(int lim){
     int x=1, y=2, z=0;
-    long suma=3;
+    long suma=0;
 
-    while (true){
+    while (x<lim){
+        if (x%2==0){
+            suma += x;
+        }
         z = x+y;
         x = y;
         y = z;
-        if (y>lim){
-            cout<<x<<"\n";
-            return suma;//
-        }
-        suma += y;
+        /*if (y>lim){
+            cout<<x<<"\n";//numero fibonacci maximo menor a lim
+            return suma+3;//suma de la secuencia hasta x
+        }*/
     }
+    return suma;
 }
 //3
-bool esprimo(int numero){
-    int i=2;
-    if (numero < 2){
+bool esprimo(long numero){
+
+    if (numero < 2 || numero%10==0 || numero%4==0 || numero%6==0){
         return 0;
     }
     if(numero == 2){
         return 1;
     }
-    while (i<numero){
+    long i=2;
+    int aux=numero/2;
+    while (i<=aux){
         if (numero%i==0){
             return 0;
         }
@@ -57,26 +63,24 @@ void imprime(long int num[],int t){
     }
 }
 
-void factores_primos(const long int num){
-    long factores[100]={0};
-    int k=0,aux=num,j=0;
+int factores_primos(const long int num){
+    long factores[10]={0};
+    long k=0,aux=num,mayor_primo=0;
     if (!esprimo(num)){
-        for (int i=2; i<=num/2; i++){
-            while (aux%i==0){
+        for (long i=2; i*i<num; i++){
+            if (aux%i==0){
                 aux /= i;
-                if (factores[0]==0){//llena el primer elemento con el primer factor primo
+                if (esprimo(i)){
                     factores[k++]=i;
-                }
-                else if (i!=factores[j]){//compara i no sea igual al anterior factor primo
-                    factores[k++]=i;     //para evitar repeticiones
-                    j++;
+                    mayor_primo = i;
                 }
             }
         }
     }
     imprime(factores,k);
+    cout<<"\n";
+    return mayor_primo;
 }
-
 //4numero palindromo
 int contar_digitos(int num){
     int cont=0;
@@ -87,54 +91,66 @@ int contar_digitos(int num){
     return cont;
 }
 bool es_palindromo(int num){
+    if (num%10==0){
+        return 0;
+    }
     int digitos=contar_digitos(num);
-    int num2=0,aux=num;
-    for (int i=0; i<=digitos; i++){
-        if (aux>=10){
-            num2 += floor(aux%10);
-        }
+    int aux=num;
+    int mult_diez=pow(10,digitos-1);
+    int num_der = aux%10;
+    int num_izq = floor(aux/mult_diez);
+    while (num_der == num_izq){
 
-        else {
-            num2 += aux;
+        aux -= num_izq*mult_diez;
+        if (aux <= mult_diez/10){
+            aux -= num_der;
         }
-        num2 *= 10;
-        if (num2==num*10){
+        else {
+            aux -= num_der;
+            aux /= 10;
+        }
+        mult_diez /= 100;
+        if (aux<10){
             return 1;
         }
-        aux = aux/10;
+        num_der = aux%10;
+        num_izq = floor(aux/mult_diez);
     }
     return 0;
 }
-int mayor_palindromo(int digit){
-    int j=pow(10,digit-1), i=pow(10,digit-1);
-    int aux = i*j;
-    while (j<pow(10,digit)){
-        if (es_palindromo(j*i)==1 && j*i>pow(10,2*digit)){
-            return aux;
+
+int mayor_palindromo(int digitos){
+    int j=pow(10,digitos-1), i=j;
+    int aux = i*j,mayor;
+    int mult_diez=pow(10,digitos);
+    while (j<mult_diez+1){
+        if (es_palindromo(aux)){
+            mayor = aux;
         }
-        aux = j*i;
-        if (i==pow(10,digit)-1){
+        if (i==mult_diez-1){
             j++;
+            i=mult_diez/10;
         }
         else {
             i++;
         }
+        aux = j*i;
     }
-    return 0;
+    return mayor;
 }
 
 //5
-int smallest_num(int lim){
-    int aux=lim,k=0;
-    while(k!=aux){
-        k = 0;
-        while (lim%(k+1)==0){
+long smallest_num(int lim){
+    unsigned long aux=lim;
+    int k=2;
+    while(k!=lim+1){
+        k = 2;
+        while (aux%(k)==0){
             k++;
         }
-        lim++;
+        aux++;
     }
-    return --lim;
-
+    return --aux;
 }
 
 //6
@@ -162,16 +178,36 @@ int n_primo(int num){
     return --i;
 }
 
+//8
+
+//9
+int prod_abc(int num_suma){
+    int a=1,b=1,c=1;
+    while (a<num_suma && sqrt(c)+b+a!=num_suma){
+        if (b==num_suma){
+            a++;
+            b=1;
+        }
+        b++;
+        c = a*a + b*b;
+    }
+    c = sqrt(c);
+    return a*b*c;
+}
+
 int main(){
-    unsigned int lim;
+    unsigned long lim;
     cout<<"Numero: "; cin>>lim;
     //cout<<suma_3_5(lim)<<"\n";
     //cout<<suma_fibonacci(lim)<<"\n";
-    //factores_primos(lim);
+    //cout<<factores_primos(lim)<<endl;
     //cout<<smallest_num(lim);
+    //cout<<es_palindromo(lim)<<endl;
     //cout<<mayor_palindromo(lim);
     //cout<<dif_square(lim);
-    cout<<n_primo(lim);
+    //cout<<n_primo(lim);
+    //cout<<prod_abc(lim);
+
     getch();
     return 0;
 }
