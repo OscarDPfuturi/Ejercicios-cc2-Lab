@@ -97,11 +97,11 @@ Point *updateConstructorPoints(const Point &p1,const Point &p2,const Point &p3, 
     return constructorPoints;
 }
 
-Rectangle::Rectangle( const Point &ll, const Point &ur) :
-    Polygon(updateConstructorPoints(ll, Point(ll.getX(), ur.getY()), ur, Point(ur.getX(), ll.getY())), 4) {}
+Rectangle::Rectangle( const Point &ii, const Point &sd) :
+    Polygon(updateConstructorPoints(ii, Point(ii.getX(), sd.getY()), sd, Point(sd.getX(), ii.getY())), 4) {}
 
-Rectangle::Rectangle( const int llx, const int lly, const int urx, const int ury) :
-    Polygon(updateConstructorPoints(Point(llx, lly), Point(llx, ury), Point(urx, ury), Point(urx, lly)), 4) {}
+Rectangle::Rectangle( const int x1, const int y1, const int x2, const int y2) :
+    Polygon(updateConstructorPoints(Point(x1, y1), Point(x1, y2), Point(x2, y2), Point(x2, y1)), 4) {}
 
 double Rectangle::area() const {
     int length = points.get(1)->getY() - points.get(0)->getY();
@@ -125,7 +125,7 @@ double Triangle::area() const {
         b = sqrt(dx12*dx12 + dy12*dy12),
         c = sqrt(dx20*dx20 + dy20*dy20);
 
-    double s = (a +b+c) /2;
+    double s = (a+b+c) /2;
 
     return sqrt( s * (s-a) * (s-b) * (s-c) );
 }
