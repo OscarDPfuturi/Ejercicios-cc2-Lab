@@ -10,6 +10,7 @@ int main()
 {
     List<int> list_1;
     List<char> list_2;
+    char c;
     int ele;
 
     int dim;
@@ -18,8 +19,8 @@ int main()
     cout << "Ingresa la dimensión de la lista: " << endl;
     cin >> dim;
     for (int i=0; i<dim; i++){
-        fflush(stdin);
-        cout<<"ingrese elemento: "; cin>>ele;
+        //fflush(stdin);
+        cout<<"ingrese elemento: "; cin>>c;
         list_2.add_head(ele);
 
     }
