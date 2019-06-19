@@ -54,8 +54,12 @@ void Node<T>::print(){
 }
 
 
+template <typename T> class Iterator;
+
+template <typename T> class Coleccion;
+
 template <typename T>
-class List{////////////////////////////////clase List//////////////////////////////////////
+class List : public Coleccion{////////////////////////////////clase List//////////////////////////////////////
     Node<T> *m_head;
     int num_nodes;
 public:
@@ -63,7 +67,8 @@ public:
     List();
 
     ~List();
-
+    virtual void add_nodo(T *);
+    virtual Iterator<T> *get_Iterator();
     void add_head(T);
     void add_end(T);
     void add_sort(T);//agrega y ordena
@@ -79,7 +84,7 @@ public:
 
     void sort();
 
-    //Iterator *crearIterator()const;
+    //Iterator<T> *crearIterator();
 };
 
 
@@ -266,32 +271,83 @@ void List<T>::buscar_lista(T data_){
 template<typename T>
 List<T>::~List() {}
 
+template<typename T>
+Iterator<T> *List<T>::get_Iterator(){
+    return new ListIterator<T>(m_head);
+}
+
 //fuente////////////////////https://sourcemaking.com/design_patterns/iterator/cpp/1
 
 
-/*template <typename T>
+template <typename T>
 class Iterator{/////////////////////////////clase Iterator///////////////////////////////////
-    Node<T> *nd;
-    int index;
+    /*Node<T> *nd;
+    int index;//*/
 public:
-    Iterator(Node<T> *_nd){ nd = _nd;}
+
+    virtual bool masElementos()const = 0;
+    virtual T *proxElemento() = 0;
+
+    /*Iterator(Node<T> *_nd){ nd = _nd;}//
 
     void first(){index = 0;}
     void next(){index++;}
     bool hecho(){return nd->get_data()+1;}
 
-    int Item_actual(){return nd->List[index];}
+    int Item_actual(){return nd->List[index];}*/
 
 };
 
 template <typename T>
-Iterator *Iterator<T>::crearIterator()const{
-    return new Iterator(this);
+class ListIterator : public Iterator{///////////////listIterator//////////
+    Node<T> *cursor;
+public:
+    ListIterator(Node<T> *);
+    virtual bool masElementos()const;
+    virtual T *proxElemento();
+    virtual ~ListIterator(){};
+};
+
+template <typename T>
+ListIterator<T>::ListIterator(Node<T> *nodo){
+    cursor = nodo;
 }
-bool operator == (const List &l, const List &r)
+
+template <typename T>
+bool ListIterator<T>::masElementos()const{
+    return (cursor != NULL);
+}
+
+template <typename T>
+T *ListIterator<T>::proxElemento(){
+    T *aux;
+    if (masElementos()){
+        aux = cursor->get_data();
+        cursor = cursor->get_node();
+        return aux;
+    }
+    return NULL;
+}
+
+template <typename T>
+class Coleccion{
+public:
+    virtual void add_nodo(T *) = 0;
+    virtual Iterator<T> *get_Iterator() = 0;
+};
+
+
+
+/*template <typename T>
+Iterator<T> *Iterator<T>::crearIterator(){
+    return new Iterator<T>(this);
+}*/
+
+template <typename T>
+bool operator == (const List<T> &l, const List<T> &r)
 {
-  Iterator *itl = l.crearIterator();
-  Iterator *itr = r.crearIterator();
+  Iterator<T> *itl = l.crearIterator();
+  Iterator<T> *itr = r.crearIterator();
 
   for (itl->first(), itr->first(); !itl->hecho(); itl->next(), itr->next())
     if (itl->Item_actual() != itr->Item_actual())
@@ -300,7 +356,7 @@ bool operator == (const List &l, const List &r)
   delete itl;
   delete itr;
   return ans;
-}*/
+}
 
 int main()/////////////////funcion principal/////////////////////////
 {
