@@ -16,50 +16,68 @@ public:
 };
 
 template <typename T>
-class Pila{//////////////////////////////////clase Pila///////////////////////////////////
-    Nodo<T> *raiz;
+class Cola{//////////////////////////////////clase Cola///////////////////////////////////
+    Nodo<T> *adelante;
+    Nodo<T> *atras;
+    int cont;
 public:
-    Pila(){raiz = NULL;};
-    ~Pila();
+    Cola(){adelante = NULL; atras = NULL; cont = 0;};
+    ~Cola();
 
     void insertar(T);
     void extraer();
     void imprimir();
+    bool esta_vacio();
+
+
+
 };
 
-template <typename T>
-void Pila<T>::insertar(T x){
-    Nodo<T> *nuevo;
-    nuevo = new Nodo<T>();
-    nuevo->set_dato(x);
-    if (raiz == NULL){
-        raiz = nuevo;
-        nuevo->set_nodo(NULL);
+
+template<class T>
+bool Cola<T>::esta_vacio(){
+    return(cont == 0);
+}
+
+template<class T>
+void Cola<T>::insertar(T data){
+    Nodo<T> *nuevo = new Nodo<T>();
+    nuevo->set_dato(data);
+    nuevo->set_nodo(NULL);
+    if(esta_vacio()){
+        adelante = nuevo;
     }
     else{
-        nuevo->set_nodo(raiz);
-        raiz = nuevo;
+        atras->set_nodo(nuevo);
+    }
+    atras = nuevo;
+    cont++;
+}
+
+template<class T>
+void Cola<T>::extraer(){
+    if(esta_vacio()){
+        cout << "Esta vacio" << endl;
+    }
+    else{
+        Nodo<T> *temp = adelante;
+        if(adelante == atras){
+            adelante = NULL;
+            atras = NULL;
+        }
+        else{
+            adelante = adelante->get_nodo();
+        }
+        delete temp;
+        cont--;
     }
 }
 
-template <typename T>
-void Pila<T>::extraer(){
-    if (raiz != NULL){
-        T informacion = raiz->get_dato();
-        Nodo<T> *bor = raiz;
-        raiz = raiz->get_nodo();
-        delete bor;
-        cout<<"Se elimino "<<informacion<<" de la pila."<<endl;
-    }
-    else{
-        cout<<"La pila esta vacia."<<endl;
-    }
-}
 
 template <typename T>
-void Pila<T>::imprimir(){
-    Nodo<T> *reco = raiz;
-    cout << "Listado de todos los elementos de la pila.\n";
+void Cola<T>::imprimir(){
+    Nodo<T> *reco = adelante;
+    cout << "Elementos en la cola.\n";
     while (reco != NULL){
         cout << reco->get_dato() << "-";
         reco = reco->get_nodo();
@@ -68,8 +86,8 @@ void Pila<T>::imprimir(){
 }
 
 template <typename T>
-Pila<T>::~Pila(){
-    Nodo<T> *reco = raiz;
+Cola<T>::~Cola(){
+    Nodo<T> *reco = adelante;
     Nodo<T> *bor;
     while (reco != NULL){
         bor = reco;
@@ -81,7 +99,7 @@ Pila<T>::~Pila(){
 
 
 template <typename T>
-void menu(Pila<T> *pila){
+void menu(Cola<T> *cola){
     int opc;
     T ele;
     do {
@@ -95,20 +113,20 @@ void menu(Pila<T> *pila){
         switch(opc){
         case 1:
             cout<<"Ingrese elemento: "; cin >> ele;
-            pila->insertar(ele); break;
+            cola->insertar(ele); break;
         case 2:
-            pila->extraer(); break;
+            cola->extraer(); break;
         case 3:
-            pila->imprimir(); break;
+            cola->imprimir(); break;
         }
     }while (opc!=4);
 }
 
 int main(){
-    Pila<char> *pila1;
-    pila1 = new Pila<char>();
+    Cola<int> *cola1;
+    cola1 = new Cola<int>();
 
-    menu(pila1);
-    delete pila1;
+    menu(cola1);
+    delete cola1;
     cin.get();
 }
